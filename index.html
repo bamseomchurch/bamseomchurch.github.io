@@ -16,24 +16,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    /* 예배당 나무색에서 뽑은 색 */
     :root {
-      --logo: #22a4be;      /* CI 색상 */
-      --deep: #12697b;      /* 글자·버튼용 짙은 청록 */
-      --mist: #edf6f8;
-      --ink: #1c2629;
-      --soft: #56666b;
+      --birch: #d9b77a;     /* 밝은 자작나무 벽 */
+      --cedar: #a8683a;     /* 강단 뒤 나무 블록 */
+      --walnut: #5b3a22;    /* 짙은 나무색: 제목·버튼 */
+      --tint: #f6eee2;      /* 옅은 나무색 바탕 */
+      --ink: #2a211b;
+      --soft: #6e6258;
       --paper: #ffffff;
-      --line: #d3e3e7;
+      --line: #e6d8c4;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --deep: #7fd0e0;
-        --mist: #142024;
-        --ink: #e7f0f2;
-        --soft: #a4b6ba;
-        --paper: #0d1619;
-        --line: #26393e;
+        --walnut: #e2bf86;
+        --tint: #221a14;
+        --ink: #efe6da;
+        --soft: #b3a596;
+        --paper: #15100c;
+        --line: #3a2e24;
       }
+      .btn.primary { color: #2a1a0e; }
     }
     * { box-sizing: border-box; }
     html { -webkit-text-size-adjust: 100%; }
@@ -48,58 +51,57 @@
     }
     .wrap { max-width: 680px; margin: 0 auto; padding: 0 22px; }
 
-    /* 머리 부분: CI + 교회 이름 */
+    /* 머리 부분: 예배당 사진 위에 CI와 교회 이름 */
     header {
-      background: var(--mist);
-      padding: calc(44px + env(safe-area-inset-top, 0px)) 0 40px;
+      color: #fff;
+      background:
+        linear-gradient(90deg, rgba(40, 24, 12, .55) 0%, rgba(40, 24, 12, 0) 30%, rgba(40, 24, 12, 0) 70%, rgba(40, 24, 12, .55) 100%),
+        linear-gradient(180deg, rgba(40, 24, 12, .25) 0%, rgba(40, 24, 12, .75) 100%),
+        url("church.jpg") center 70% / cover no-repeat,
+        var(--walnut);
+      min-height: clamp(200px, 26vw, 320px);
+      display: flex;
+      align-items: flex-end;
+      padding: calc(36px + env(safe-area-inset-top, 0px)) 0 30px;
     }
-    .id { display: flex; align-items: center; gap: 22px; }
-    .id img { width: 104px; height: 104px; flex: none; }
-    .denomination { margin: 0; color: var(--soft); font-size: 15px; }
+    header .wrap { width: 100%; }
+    .id { display: flex; align-items: center; gap: 18px; }
+    .id img {
+      width: 84px; height: 84px; flex: none;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, .85);
+    }
+    .denomination { margin: 0; font-size: 14px; color: rgba(255, 255, 255, .85); }
     h1 {
-      margin: 2px 0 0;
+      margin: 0;
       font-family: "Gowun Batang", "Nanum Myeongjo", serif;
       font-weight: 700;
-      font-size: clamp(34px, 9vw, 52px);
-      line-height: 1.15;
-      color: var(--deep);
+      font-size: clamp(32px, 8.5vw, 48px);
+      line-height: 1.2;
+      text-shadow: 0 1px 12px rgba(0, 0, 0, .35);
     }
     .worship {
-      margin: 28px 0 0;
-      padding-left: 14px;
-      border-left: 4px solid var(--logo);
-      font-size: 19px;
+      margin: 22px 0 0;
+      padding-left: 12px;
+      border-left: 4px solid var(--birch);
+      font-size: 18px;
       line-height: 1.5;
     }
-    .worship strong { font-weight: 700; }
+    .worship strong { font-weight: 700; color: #f6d9a6; }
 
-    /* 예배당 사진 */
-    figure { margin: 0; }
-    .photo img {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-width: 1200px;
-      margin: 0 auto;
-      aspect-ratio: 2 / 1;
-      object-fit: cover;
-      object-position: 50% 60%;
-    }
-    .photo figcaption { max-width: 680px; margin: 10px auto 0; padding: 0 22px; color: var(--soft); font-size: 14px; }
-    @media (max-width: 600px) { .photo img { aspect-ratio: 4 / 3; } }
-
-    section { padding: 44px 0 8px; }
+    section { padding: 40px 0 8px; }
     h2 {
       margin: 0 0 16px;
       font-family: "Gowun Batang", "Nanum Myeongjo", serif;
       font-size: 26px;
       font-weight: 700;
+      color: var(--walnut);
     }
     .frame {
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      background: var(--mist);
+      background: var(--tint);
       border-radius: 6px;
       overflow: hidden;
     }
@@ -117,19 +119,24 @@
       border: 1px solid var(--line);
       background: var(--paper); color: var(--ink);
     }
-    .btn.primary { background: var(--deep); border-color: var(--deep); color: var(--paper); }
-    .btn:focus-visible { outline: 3px solid var(--logo); outline-offset: 2px; }
+    .btn.primary { background: var(--walnut); border-color: var(--walnut); color: #fff; }
+    .btn:focus-visible { outline: 3px solid var(--cedar); outline-offset: 2px; }
 
     address { font-style: normal; margin-top: 18px; font-size: 18px; }
     address small { display: block; color: var(--soft); font-size: 15px; }
 
     footer {
       margin-top: 56px;
-      padding: 28px 0 40px;
-      border-top: 1px solid var(--line);
+      padding: 30px 0 40px;
+      background: var(--tint);
       color: var(--soft);
       font-size: 14px;
+      line-height: 1.8;
     }
+    footer p { margin: 0; }
+    footer .name { color: var(--walnut); font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    footer a { color: var(--walnut); }
+    footer .copy { margin-top: 12px; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -147,21 +154,16 @@
   </div>
 </header>
 
-<figure class="photo">
-  <img src="church.jpg" alt="한강밤섬교회 예배당 강단" width="1600" height="798">
-  <figcaption>밤섬빌딩 4층 예배당</figcaption>
-</figure>
-
 <main class="wrap">
 
   <section>
     <h2>설교 말씀</h2>
     <div class="frame" id="sermon">
-      <p class="notice">유튜브 채널 ID를 입력하면 최신 설교 영상이 여기에 표시됩니다.</p>
+      <p class="notice">설교 재생목록 주소를 입력하면 최신 설교 영상이 여기에 표시됩니다.</p>
     </div>
     <div class="buttons">
       <a class="btn primary" href="https://www.youtube.com/@한강밤섬교회/live" target="_blank" rel="noopener">실시간 예배 보기</a>
-      <a class="btn" href="https://www.youtube.com/@한강밤섬교회/videos" target="_blank" rel="noopener">지난 설교 전체 보기</a>
+      <a class="btn" href="https://www.youtube.com/@한강밤섬교회/playlists" target="_blank" rel="noopener">지난 설교 전체 보기</a>
     </div>
   </section>
 
@@ -186,25 +188,45 @@
 </main>
 
 <footer>
-  <div class="wrap">대한예수교장로회 한강밤섬교회</div>
+  <div class="wrap">
+    <p class="name">대한예수교장로회 한강밤섬교회</p>
+    <p>서울특별시 마포구 창전로 32 밤섬빌딩 4층</p>
+    <p>문의 <a href="mailto:bamseomchurch@gmail.com">bamseomchurch@gmail.com</a></p>
+    <p class="copy">© <span id="year">2026</span> 한강밤섬교회. All rights reserved.</p>
+  </div>
 </footer>
 
 <script>
   /* ================================================================
-     ✏️ 여기만 수정하세요: 유튜브 채널 ID (UC로 시작하는 24자리)
-     예) const CHANNEL_ID = "UCabcdefghijklmnopqrstuv";
-     ================================================================ */
-  const CHANNEL_ID = "UCl7SMfXFkBmoVAFp-Rv0pwQ";
+     ✏️ 여기만 수정하세요
 
-  // 채널 ID의 UC를 UU로 바꾸면 '업로드한 영상 전체' 재생목록이 됩니다.
-  // 새 영상을 올리면 자동으로 맨 앞에 표시되므로 매주 수정할 필요가 없습니다.
-  if (/^UC[\w-]{22}$/.test(CHANNEL_ID.trim())) {
-    const list = "UU" + CHANNEL_ID.trim().slice(2);
-    document.getElementById("sermon").innerHTML =
-      '<iframe src="https://www.youtube.com/embed/videoseries?list=' + list + '" ' +
-      'title="한강밤섬교회 설교 영상" loading="lazy" ' +
-      'allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-  }
+     SERMON_PLAYLIST: 설교 재생목록 주소를 통째로 붙여넣으세요.
+       예) "https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxxx"
+       해가 바뀌어 새 연도 재생목록을 만들면 이 주소만 바꾸면 됩니다.
+
+     CHANNEL_ID: (선택) 재생목록 주소를 비워두면 채널 전체 영상을 보여줍니다.
+     ================================================================ */
+  const SERMON_PLAYLIST = "";
+  const CHANNEL_ID = "";
+
+  (function () {
+    let list = "";
+    const p = SERMON_PLAYLIST.trim();
+    const m = p.match(/list=([\w-]+)/);
+    if (m) list = m[1];
+    else if (/^[\w-]{12,}$/.test(p)) list = p;
+    else if (/^UC[\w-]{22}$/.test(CHANNEL_ID.trim())) list = "UU" + CHANNEL_ID.trim().slice(2);
+
+    if (list) {
+      document.getElementById("sermon").innerHTML =
+        '<iframe src="https://www.youtube.com/embed/videoseries?list=' + list + '" ' +
+        'title="한강밤섬교회 설교 영상" loading="lazy" ' +
+        'allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    }
+  })();
+
+  // 저작권 연도 자동 표시
+  document.getElementById("year").textContent = new Date().getFullYear();
 
   // 주소 복사 버튼
   document.getElementById("copy").addEventListener("click", function () {
