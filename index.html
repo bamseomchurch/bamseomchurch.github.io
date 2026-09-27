@@ -69,7 +69,7 @@
     .id img {
       width: 84px; height: 84px; flex: none;
       border-radius: 50%;
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, .85);
+      filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .35));
     }
     .denomination { margin: 0; font-size: 14px; color: rgba(255, 255, 255, .85); }
     h1 {
@@ -137,6 +137,29 @@
     footer .name { color: var(--walnut); font-weight: 700; font-size: 15px; margin-bottom: 4px; }
     footer a { color: var(--walnut); }
     footer .copy { margin-top: 12px; font-size: 13px; }
+    .mail {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 10px; min-height: 44px; padding: 0 16px 0 12px;
+      border: 1px solid var(--line); border-radius: 999px;
+      background: var(--paper); color: var(--walnut);
+      font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+    }
+    .mail svg { width: 20px; height: 20px; flex: none; }
+    .mail:focus-visible { outline: 3px solid var(--cedar); outline-offset: 2px; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      transform: translate(-50%, 12px);
+      width: max-content; max-width: calc(100% - 32px);
+      white-space: nowrap; line-height: 1.4;
+      padding: 12px 22px; border-radius: 999px;
+      background: #2a1a0e; color: #fff; font-size: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
   </style>
 </head>
 <body>
@@ -191,10 +214,17 @@
   <div class="wrap">
     <p class="name">대한예수교장로회 한강밤섬교회</p>
     <p>서울특별시 마포구 창전로 32 밤섬빌딩 4층</p>
-    <p>문의 <a href="mailto:bamseomchurch@gmail.com">bamseomchurch@gmail.com</a></p>
+    <button class="mail" type="button" id="mail" aria-label="이메일 주소 복사">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/>
+      </svg>
+      이메일 문의
+    </button>
     <p class="copy">© <span id="year">2026</span> 한강밤섬교회. All rights reserved.</p>
   </div>
 </footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
   /* ================================================================
@@ -206,8 +236,8 @@
 
      CHANNEL_ID: (선택) 재생목록 주소를 비워두면 채널 전체 영상을 보여줍니다.
      ================================================================ */
-  const SERMON_PLAYLIST = "https://www.youtube.com/watch?v=4WTPlw997tU&list=PLTABRuxTL7oCxVd5fbYpjsimLFBi3K1Pz";
-  const CHANNEL_ID = "UCl7SMfXFkBmoVAFp-Rv0pwQ";
+  const SERMON_PLAYLIST = "";
+  const CHANNEL_ID = "";
 
   (function () {
     let list = "";
@@ -228,16 +258,44 @@
   // 저작권 연도 자동 표시
   document.getElementById("year").textContent = new Date().getFullYear();
 
+  // 안내 메시지(토스트)
+  const toastEl = document.getElementById("toast");
+  let toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 2200);
+  }
+
+  // 클립보드 복사 (구형 브라우저 대비 포함)
+  function copyText(text, okMsg) {
+    function fallback() {
+      const t = document.createElement("textarea");
+      t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(t);
+      if (ok) toast(okMsg); else window.prompt("아래 내용을 복사하세요", text);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { toast(okMsg); }, fallback);
+    } else {
+      fallback();
+    }
+  }
+
   // 주소 복사 버튼
   document.getElementById("copy").addEventListener("click", function () {
-    const btn = this;
-    const text = "서울특별시 마포구 창전로 32 밤섬빌딩 4층";
-    navigator.clipboard.writeText(text).then(function () {
-      btn.textContent = "주소 복사됨";
-      setTimeout(function () { btn.textContent = "주소 복사"; }, 2000);
-    }).catch(function () {
-      window.prompt("아래 주소를 복사하세요", text);
-    });
+    copyText("서울특별시 마포구 창전로 32 밤섬빌딩 4층", "교회 주소가 복사되었습니다");
+  });
+
+  // 이메일 복사 버튼 (주소를 나눠 두어 자동 수집을 어렵게 함)
+  document.getElementById("mail").addEventListener("click", function () {
+    const user = ["bamseom", "church"].join("");
+    const host = ["gmail", "com"].join(".");
+    copyText(user + "@" + host, "이메일 주소가 복사되었습니다");
   });
 </script>
 </body>
